@@ -6,7 +6,7 @@ const tasks = require('../model/tasks');
 const getAllTasks = async (req, res) => {
   try {
     const allTasks = tasks.find();
-    res.status(201).send(allTasks);
+    res.status(200).send(allTasks);
   } catch (error) {
     console.error('error ', error.message);
     res.status(400).json(error);
@@ -22,7 +22,7 @@ const getTaskById = async (req, res) => {
 
     const task = tasks.findById(id);
     if (!task.length) throw new Error("Couldn't find a task with the given id");
-    res.status(201).send(task);
+    res.status(200).send(task);
   } catch (error) {
     console.error('error ', error.message);
     res.status(400).json(error.message);
@@ -36,11 +36,27 @@ const createTask = async (req, res) => {
   try {
     const body = req.body;
     const result = tasks.write(body);
-    res.status(200).send(result);
+    res.status(201).send(result);
   } catch (error) {
     console.error('error ', error.message);
     res.status(400).json(error.message);
   }
 };
 
-module.exports = { getAllTasks, getTaskById, createTask };
+// @desc    Update task by id
+// @route   PUT /api/tasks/:id
+// @access  Public
+const updateTaskById = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const body = req.body;
+
+    const task = tasks.findByIdAndUpdate(id, body);
+    res.status(200).send(task);
+  } catch (error) {
+    console.error('error ', error);
+    res.status(400).json(error.message);
+  }
+};
+
+module.exports = { getAllTasks, getTaskById, createTask, updateTaskById };

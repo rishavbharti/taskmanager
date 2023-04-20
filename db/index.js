@@ -114,7 +114,14 @@ class Database {
     if (!this[schemaName].store.hasOwnProperty(id))
       throw new Error("Couldn't find a task with the given id");
 
-    this[schemaName].store[id] = { ...this[schemaName].store[id], ...data };
+    const validatedData = {
+      ...this[schemaName].store[id],
+      ...data,
+    };
+
+    this.validate(schemaName, validatedData);
+
+    this[schemaName].store[id] = validatedData;
 
     return this[schemaName].store[id];
   }

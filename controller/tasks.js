@@ -13,6 +13,22 @@ const getAllTasks = async (req, res) => {
   }
 };
 
+// @desc    Get task by id
+// @route   GET /api/tasks/:id
+// @access  Public
+const getTaskById = async (req, res) => {
+  try {
+    const id = req.params.id;
+
+    const task = tasks.findById(id);
+    if (!task.length) throw new Error("Couldn't find a task with the given id");
+    res.status(201).send(task);
+  } catch (error) {
+    console.error('error ', error.message);
+    res.status(400).json(error.message);
+  }
+};
+
 // @desc    Create a new task
 // @route   POST /api/tasks
 // @access  Public
@@ -27,4 +43,4 @@ const createTask = async (req, res) => {
   }
 };
 
-module.exports = { getAllTasks, createTask };
+module.exports = { getAllTasks, getTaskById, createTask };

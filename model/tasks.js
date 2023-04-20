@@ -15,7 +15,7 @@ const taskSchema = {
     maxLength: 1000,
     required: true,
   },
-  status: {
+  completed: {
     type: 'Boolean',
     default: false,
   },

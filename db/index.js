@@ -118,6 +118,20 @@ class Database {
 
     return this[schemaName].store[id];
   }
+
+  deleteOne(filters) {
+    const schemaName = Object.keys(this)[0];
+
+    if (!filters) throw new Error('No filters present to identify data.');
+
+    if (filters?.id) {
+      if (!this[schemaName].store.hasOwnProperty(filters.id))
+        throw new Error("Couldn't find a task with the given id");
+
+      delete this[schemaName].store[filters.id];
+      return true;
+    }
+  }
 }
 
 module.exports = Database;

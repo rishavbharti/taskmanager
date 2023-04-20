@@ -59,4 +59,25 @@ const updateTaskById = async (req, res) => {
   }
 };
 
-module.exports = { getAllTasks, getTaskById, createTask, updateTaskById };
+// @desc    Delete a task by id
+// @route   DELETE /api/tasks/:id
+// @access  Public
+const deleteTaskById = async (req, res) => {
+  try {
+    const id = req.params.id;
+
+    const result = tasks.deleteOne({ id });
+    if (result) res.status(200).send('Deleted task');
+  } catch (error) {
+    console.error('error ', error.message);
+    res.status(400).json(error.message);
+  }
+};
+
+module.exports = {
+  getAllTasks,
+  getTaskById,
+  createTask,
+  updateTaskById,
+  deleteTaskById,
+};

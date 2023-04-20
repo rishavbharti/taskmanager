@@ -4,7 +4,7 @@ class Database {
   model(name, schema) {
     this[name] = {
       _schema: schema,
-      store: [],
+      store: {},
     };
 
     return this;
@@ -86,7 +86,7 @@ class Database {
       const schemaName = Object.keys(this)[0];
 
       this.validate(schemaName, data);
-      this[schemaName].store.push(data);
+      this[schemaName].store[data.id] = data;
       return data;
     } catch (error) {
       throw new Error(error.message);
@@ -96,7 +96,7 @@ class Database {
   find(filters) {
     const schemaName = Object.keys(this)[0];
 
-    if (!filters) return this[schemaName].store;
+    if (!filters) return Object.values(this[schemaName].store);
   }
 
   findById(id) {
@@ -104,7 +104,19 @@ class Database {
 
     if (!id) throw new Error('ID is required');
 
-    return this[schemaName].store.filter((data) => data.id === id);
+    return this[schemaName].store[id];
+  }
+
+  findByIdAndUpdate(id, data) {
+    const schemaName = Object.keys(this)[0];
+
+    if (!id) throw new Error('ID is required');
+    if (!this[schemaName].store.hasOwnProperty(id))
+      throw new Error("Couldn't find a task with the given id");
+
+    this[schemaName].store[id] = { ...this[schemaName].store[id], ...data };
+
+    return this[schemaName].store[id];
   }
 }
 

@@ -92,6 +92,12 @@ class Database {
       throw new Error(error.message);
     }
   }
+
+  find(filters) {
+    const schemaName = Object.keys(this)[0];
+
+    if (!filters) return this[schemaName].store;
+  }
 }
 
 module.exports = Database;

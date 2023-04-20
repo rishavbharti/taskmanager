@@ -76,7 +76,7 @@ class Database {
       }
     }
 
-    data.id = Date.now();
+    data.id = Date.now().toString();
     data.createdAt = new Date();
     data.updatedAt = new Date();
   }
@@ -97,6 +97,14 @@ class Database {
     const schemaName = Object.keys(this)[0];
 
     if (!filters) return this[schemaName].store;
+  }
+
+  findById(id) {
+    const schemaName = Object.keys(this)[0];
+
+    if (!id) throw new Error('ID is required');
+
+    return this[schemaName].store.filter((data) => data.id === id);
   }
 }
 

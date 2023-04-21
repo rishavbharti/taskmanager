@@ -1,17 +1,19 @@
 const tasks = require('../model/tasks');
 
 // @desc    Get tasks
-// @route   GET /api/tasks, /api/tasks?priority=high&complete=true
+// @route   GET /api/tasks, /api/tasks?priority=high&completed=true
+// @param   ?property=value
+// @body    { sortBy: property, orderBy: 'asc' | 'desc' }
 // @access  Public
 const getTasks = async (req, res) => {
   try {
-    const { body, query } = req;
+    const { body: sortArgs, query: queryParams } = req;
 
-    const filteredTasks = tasks.find({ ...body, ...query });
+    const filteredTasks = tasks.find(queryParams, sortArgs);
     res.status(200).send(filteredTasks);
   } catch (error) {
     console.error('error ', error.message);
-    res.status(400).json(error);
+    res.status(400).json(error.message);
   }
 };
 

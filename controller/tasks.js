@@ -5,7 +5,7 @@ const tasks = require('../model/tasks');
 // @param   ?property=value
 // @body    { sortBy: property, orderBy: 'asc' | 'desc' }
 // @access  Public
-const getTasks = async (req, res) => {
+const getTasks = (req, res) => {
   try {
     const { body: sortArgs, query: queryParams } = req;
 
@@ -20,7 +20,7 @@ const getTasks = async (req, res) => {
 // @desc    Get task by id
 // @route   GET /api/tasks/:id
 // @access  Public
-const getTaskById = async (req, res) => {
+const getTaskById = (req, res) => {
   try {
     const id = req.params.id;
 
@@ -36,7 +36,7 @@ const getTaskById = async (req, res) => {
 // @desc    Get tasks by priority
 // @route   GET /api/tasks/priority/:level
 // @access  Public
-const getTasksByPriority = async (req, res) => {
+const getTasksByPriority = (req, res) => {
   try {
     const { level } = req.params;
 
@@ -55,7 +55,7 @@ const getTasksByPriority = async (req, res) => {
 // @desc    Create a new task
 // @route   POST /api/tasks
 // @access  Public
-const createTask = async (req, res) => {
+const createTask = (req, res) => {
   try {
     const body = req.body;
     const result = tasks.write(body);
@@ -69,7 +69,7 @@ const createTask = async (req, res) => {
 // @desc    Update task by id
 // @route   PUT /api/tasks/:id
 // @access  Public
-const updateTaskById = async (req, res) => {
+const updateTaskById = (req, res) => {
   try {
     const id = req.params.id;
     const body = req.body;
@@ -85,7 +85,7 @@ const updateTaskById = async (req, res) => {
 // @desc    Delete a task by id
 // @route   DELETE /api/tasks/:id
 // @access  Public
-const deleteTaskById = async (req, res) => {
+const deleteTaskById = (req, res) => {
   try {
     const id = req.params.id;
 

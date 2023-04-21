@@ -127,23 +127,54 @@ class Database {
     return filtersArray.join('&&');
   }
 
-  find(filters) {
-    const schemaName = Object.keys(this)[0];
-    const filtersLength = Object.entries(filters).length;
+  sort(data, properties) {
+    if (!data.length) return;
 
-    if (!filters || filtersLength === 0)
-      return Object.values(this[schemaName].store);
+    const { sortBy = 'id', orderBy = 'asc' } = properties;
 
-    const filtersString = this.constructFilterString(filters);
+    return data.sort((a, b) => {
+      if (!a.hasOwnProperty(sortBy)) throw new Error('Invalid sort property');
 
-    const dataInStore = Object.values(this[schemaName].store);
-    return dataInStore.filter((data) => {
-      try {
-        return eval(filtersString);
-      } catch (error) {
-        throw new Error(error);
+      switch (orderBy) {
+        case 'asc': {
+          return a[sortBy] - b[sortBy];
+        }
+
+        case 'desc': {
+          return b[sortBy] - a[sortBy];
+        }
+
+        default:
+          throw new Error('Invalid order property');
       }
     });
+  }
+
+  find(filters, sort) {
+    const schemaName = Object.keys(this)[0];
+    const filtersLength = Object.entries(filters)?.length;
+    const sortLength = Object.entries(sort)?.length;
+
+    let filteredData;
+
+    if (!filters || !filtersLength)
+      filteredData = Object.values(this[schemaName].store);
+    else {
+      const filtersString = this.constructFilterString(filters);
+
+      const dataInStore = Object.values(this[schemaName].store);
+      filteredData = dataInStore.filter((data) => {
+        try {
+          return eval(filtersString);
+        } catch (error) {
+          throw new Error(error);
+        }
+      });
+    }
+
+    if (!sort || !sortLength) return filteredData;
+
+    return this.sort(filteredData, sort);
   }
 
   findById(id) {

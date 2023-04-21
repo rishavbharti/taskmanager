@@ -1,16 +1,19 @@
 const express = require('express');
 const {
-  getAllTasks,
+  getTasks,
   getTaskById,
+  getTasksByPriority,
   createTask,
   updateTaskById,
   deleteTaskById,
 } = require('../controller/tasks');
 const router = express.Router();
 
-router.get('/tasks', getAllTasks);
+router.get('/tasks', getTasks);
 
 router.get('/tasks/:id', getTaskById);
+
+router.get('/tasks/priority/:level', getTasksByPriority);
 
 router.post('/tasks', createTask);
 

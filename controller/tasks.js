@@ -1,12 +1,14 @@
 const tasks = require('../model/tasks');
 
-// @desc    Get all tasks
-// @route   GET /api/tasks
+// @desc    Get tasks
+// @route   GET /api/tasks, /api/tasks?priority=high&complete=true
 // @access  Public
-const getAllTasks = async (req, res) => {
+const getTasks = async (req, res) => {
   try {
-    const allTasks = tasks.find();
-    res.status(200).send(allTasks);
+    const { body, query } = req;
+
+    const filteredTasks = tasks.find({ ...body, ...query });
+    res.status(200).send(filteredTasks);
   } catch (error) {
     console.error('error ', error.message);
     res.status(400).json(error);
@@ -23,6 +25,25 @@ const getTaskById = async (req, res) => {
     const task = tasks.findById(id);
     if (!task.length) throw new Error("Couldn't find a task with the given id");
     res.status(200).send(task);
+  } catch (error) {
+    console.error('error ', error.message);
+    res.status(400).json(error.message);
+  }
+};
+
+// @desc    Get tasks by priority
+// @route   GET /api/tasks/priority/:level
+// @access  Public
+const getTasksByPriority = async (req, res) => {
+  try {
+    const { level } = req.params;
+
+    const filteredTasks = tasks.find({
+      priority: level,
+    });
+    if (!filteredTasks.length)
+      throw new Error("Couldn't find a task with the given priority");
+    res.status(200).send(filteredTasks);
   } catch (error) {
     console.error('error ', error.message);
     res.status(400).json(error.message);
@@ -75,8 +96,9 @@ const deleteTaskById = async (req, res) => {
 };
 
 module.exports = {
-  getAllTasks,
+  getTasks,
   getTaskById,
+  getTasksByPriority,
   createTask,
   updateTaskById,
   deleteTaskById,

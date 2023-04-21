@@ -57,7 +57,7 @@ class Database {
           }
 
           case 'default': {
-            data[field] = value;
+            if (!data.hasOwnProperty(field)) data[field] = value;
             break;
           }
 
@@ -93,10 +93,57 @@ class Database {
     }
   }
 
+  constructFilterString(filters) {
+    let filtersArray = [];
+
+    for (const [field, properties] of Object.entries(filters)) {
+      if (typeof properties === 'object') {
+        for (const [property, value] of Object.entries(properties)) {
+          switch (property) {
+            case '$in': {
+              filtersArray.push(`[${value}].includes(data.${field})`);
+              break;
+            }
+
+            case '$lt': {
+              filtersArray.push(`data.${field} < '${value}'`);
+              break;
+            }
+
+            case '$gt': {
+              filtersArray.push(`data.${field} > '${value}'`);
+              break;
+            }
+
+            default:
+              break;
+          }
+        }
+      } else {
+        filtersArray.push(`data.${field}.toString() === '${properties}'`);
+      }
+    }
+
+    return filtersArray.join('&&');
+  }
+
   find(filters) {
     const schemaName = Object.keys(this)[0];
+    const filtersLength = Object.entries(filters).length;
 
-    if (!filters) return Object.values(this[schemaName].store);
+    if (!filters || filtersLength === 0)
+      return Object.values(this[schemaName].store);
+
+    const filtersString = this.constructFilterString(filters);
+
+    const dataInStore = Object.values(this[schemaName].store);
+    return dataInStore.filter((data) => {
+      try {
+        return eval(filtersString);
+      } catch (error) {
+        throw new Error(error);
+      }
+    });
   }
 
   findById(id) {

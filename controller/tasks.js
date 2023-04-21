@@ -12,7 +12,7 @@ const getTasks = async (req, res) => {
     const filteredTasks = tasks.find(queryParams, sortArgs);
     res.status(200).send(filteredTasks);
   } catch (error) {
-    console.error('error ', error.message);
+    console.error('error ', error);
     res.status(400).json(error.message);
   }
 };
@@ -28,7 +28,7 @@ const getTaskById = async (req, res) => {
     if (!task.length) throw new Error("Couldn't find a task with the given id");
     res.status(200).send(task);
   } catch (error) {
-    console.error('error ', error.message);
+    console.error('error ', error);
     res.status(400).json(error.message);
   }
 };
@@ -47,7 +47,7 @@ const getTasksByPriority = async (req, res) => {
       throw new Error("Couldn't find a task with the given priority");
     res.status(200).send(filteredTasks);
   } catch (error) {
-    console.error('error ', error.message);
+    console.error('error ', error);
     res.status(400).json(error.message);
   }
 };
@@ -61,7 +61,7 @@ const createTask = async (req, res) => {
     const result = tasks.write(body);
     res.status(201).send(result);
   } catch (error) {
-    console.error('error ', error.message);
+    console.error('error ', error);
     res.status(400).json(error.message);
   }
 };
@@ -92,7 +92,7 @@ const deleteTaskById = async (req, res) => {
     const result = tasks.deleteOne({ id });
     if (result) res.status(200).send('Deleted task');
   } catch (error) {
-    console.error('error ', error.message);
+    console.error('error ', error);
     res.status(400).json(error.message);
   }
 };

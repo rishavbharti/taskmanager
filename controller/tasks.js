@@ -25,7 +25,7 @@ const getTaskById = async (req, res) => {
     const id = req.params.id;
 
     const task = tasks.findById(id);
-    if (!task.length) throw new Error("Couldn't find a task with the given id");
+    if (!task) throw new Error("Couldn't find a task with the given id");
     res.status(200).send(task);
   } catch (error) {
     console.error('error ', error);
